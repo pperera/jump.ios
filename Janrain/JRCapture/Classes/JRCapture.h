@@ -96,6 +96,8 @@
 #import "JRCaptureUser+Extras.h"
 #import "JRCaptureError.h"
 
+#define JRENGAGE_SHARING_WITH_CAPTURE // enabled JREngage Sharing with Capture
+
 /**
  * @file
  * Main API for interacting with the Janrain Capture for iOS library
@@ -626,6 +628,8 @@ typedef enum
                 withCustomInterfaceOverrides:(NSDictionary*)customInterfaceOverrides
                                  forDelegate:(id<JRCaptureSharingDelegate>)delegate;
 #endif // JRENGAGE_SHARING_WITH_CAPTURE
+
++(void)clearSignInState;
 @end
 
 /**
