@@ -97,6 +97,7 @@ static NSString *const iPhoneUserAgent = @"Mozilla/5.0 (iPhone; U; CPU iPhone OS
                                            myWebView.frame.size.height - infoBar.frame.size.height)];
 
         [self.view addSubview:infoBar];
+        
     }
 
     // TODO: This test is here for the case where the sign-in flow opens straight to the webview (auth on just one
@@ -293,7 +294,27 @@ static NSString *const iPhoneUserAgent = @"Mozilla/5.0 (iPhone; U; CPU iPhone OS
 {
     UIApplication* app = [UIApplication sharedApplication];
     app.networkActivityIndicatorVisible = YES;
+    [infoBar fadeIn];
     [infoBar startProgress];
+    
+    UIActivityIndicatorView * activityIndicatorView = (UIActivityIndicatorView*)[self.view viewWithTag:1235];
+    if (!activityIndicatorView) {
+        activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        [activityIndicatorView setTag:1235];
+        [activityIndicatorView setFrame:self.myWebView.bounds];
+        [activityIndicatorView setHidesWhenStopped:YES];
+        [activityIndicatorView setBackgroundColor:[UIColor darkGrayColor]];
+        [self.view addSubview:activityIndicatorView];
+    }
+    [activityIndicatorView setHidden:NO];
+    [activityIndicatorView setAlpha:0.0];
+    [activityIndicatorView startAnimating];
+    [UIView animateWithDuration:0.3 delay:0.0f options:UIViewAnimationCurveEaseIn animations:^{
+        [activityIndicatorView setAlpha:1.0f];
+    } completion:^(BOOL finished) {
+        // do nothing
+    }];
+    
 }
 
 - (void)stopProgress
@@ -303,10 +324,23 @@ static NSString *const iPhoneUserAgent = @"Mozilla/5.0 (iPhone; U; CPU iPhone OS
         UIApplication* app = [UIApplication sharedApplication];
         app.networkActivityIndicatorVisible = NO;
     }
-
+    
     keepProgress = NO;
     [infoBar stopProgress];
+    [infoBar fadeOut];
+    
+    UIActivityIndicatorView * activityIndicatorView = (UIActivityIndicatorView*)[self.view viewWithTag:1235];
+    if (activityIndicatorView) {
+        [activityIndicatorView setAlpha:1.0f];
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationCurveEaseIn animations:^{
+            [activityIndicatorView setAlpha:0.0f];
+        } completion:^(BOOL finished) {
+            [activityIndicatorView stopAnimating];
+        }];
+        
+    }
 }
+
 
 #pragma mark JRConnectionManagerDelegate implementation
 
